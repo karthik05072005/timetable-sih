@@ -1,0 +1,95 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Create environment file
+      run: |
+        echo "MONGO_URL=mongodb://localhost:27017" >> .env.local
+        echo "DB_NAME=timetable_ai_test" >> .env.local
+        echo "JWT_SECRET=test-secret-key" >> .env.local
+        echo "CORS_ORIGINS=http://localhost:3000" >> .env.local
+        echo "NODE_ENV=test" >> .env.local
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run tests
+      run: npm test
+      env:
+        CI: true
+
+  build-and-deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Deploy to Vercel (if configured)
+      # Uncomment and configure for Vercel deployment
+      # uses: amondnet/vercel-action@v25
+      # with:
+      #   vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #   vercel-org-id: ${{ secrets.ORG_ID }}
+      #   vercel-project-id: ${{ secrets.PROJECT_ID }}
+      run: echo "Deployment step - configure your preferred deployment method"
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Run security audit
+      run: npm audit --audit-level high
+
+    - name: Check for vulnerabilities
+      run: npm audit fix --dry-run
