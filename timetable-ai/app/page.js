@@ -541,7 +541,7 @@ export default function App() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@example.com"
+                  placeholder="Enter any email (demo accepts any credentials)"
                   value={loginData.email}
                   onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                   required
@@ -552,7 +552,7 @@ export default function App() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="Enter any password (demo accepts any credentials)"
                   value={loginData.password}
                   onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                   required
