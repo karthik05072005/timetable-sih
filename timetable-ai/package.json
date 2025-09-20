@@ -16,12 +16,12 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/Shreyas-s47/timetable-ai.git"
+        "url": "https://github.com/karthik05072005/timetable-sih.git"
     },
     "bugs": {
-        "url": "https://github.com/Shreyas-s47/timetable-ai/issues"
+        "url": "https://github.com/karthik05072005/timetable-sih/issues"
     },
-    "homepage": "https://github.com/Shreyas-s47/timetable-ai#readme",
+    "homepage": "https://github.com/karthik05072005/timetable-sih#readme",
     "scripts": {
         "dev": "cross-env NODE_OPTIONS=\"--max-old-space-size=512\" next dev --hostname 0.0.0.0 --port 3000",
         "dev:no-reload": "next dev --hostname 0.0.0.0 --port 3000",

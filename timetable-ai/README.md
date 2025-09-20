@@ -1,211 +1,181 @@
-# Timetable AI - Intelligent Timetable Generation System
+# AI Timetable Generation System - SIH Project
 
-An AI-powered timetable generation system designed for educational institutions, specifically aligned with NEP 2020 for multidisciplinary education. This system uses advanced algorithms to create conflict-free timetables while optimizing for various constraints and preferences.
+A comprehensive AI-powered timetable generation system built with Next.js for educational institutions. This project features genetic algorithm optimization, modern UI/UX design, and comprehensive data management capabilities.
 
-## Features
+## 🚀 Live Demo
 
-### 🤖 AI-Powered Optimization
-- **Genetic Algorithm**: Uses evolutionary computation to find optimal timetable solutions
-- **Conflict Resolution**: Automatically prevents faculty, student, and room conflicts
-- **Constraint Satisfaction**: Handles hard and soft constraints for realistic scheduling
-- **Workload Balancing**: Ensures fair distribution of teaching loads among faculty
+Deploy your own instance:
 
-### 📊 Data Management
-- **Excel File Upload**: Support for .xlsx, .xls, and .csv file formats
-- **Student Data**: Manage student information and elective subjects
-- **Faculty Data**: Track faculty availability, subjects, and maximum hours
-- **Room Management**: Handle classroom and lab capacity constraints
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/karthik05072005/timetable-sih)
 
-### 🎯 Advanced Configuration
-- **Academic Periods**: Support for multiple semesters and academic years
-- **Flexible Constraints**: Configurable rules for timetable generation
-- **Real-time Validation**: Instant conflict detection and resolution
-- **Export Options**: Generate PDF and Excel reports
+## ✨ Features
 
-### 🎨 Modern UI/UX
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Intuitive Interface**: Clean, modern design with shadcn/ui components
-- **Real-time Feedback**: Progress indicators and status updates
-- **Dark/Light Mode**: Built-in theme support
+- **AI-Powered Generation**: Advanced genetic algorithm for optimal timetable creation
+- **Modern UI/UX**: Clean, intuitive interface with responsive design
+- **Comprehensive Management**: Complete CRUD operations for students, faculty, and rooms
+- **Smart Constraints**: Configurable scheduling constraints and preferences
+- **Multiple Export Options**: PDF, Excel, and publish functionality
+- **Sample Data**: Pre-loaded demo data for immediate testing
+- **Lunch Break Integration**: Intelligent break scheduling
+- **Real-time Preview**: Instant timetable visualization
 
-## Technology Stack
+## 🛠️ Technology Stack
 
-- **Frontend**: Next.js 14, React 18, Tailwind CSS
+- **Frontend**: Next.js 14, React 18, TailwindCSS
 - **Backend**: Next.js API Routes, MongoDB
-- **UI Components**: shadcn/ui, Radix UI
-- **File Processing**: XLSX.js for Excel file handling
-- **Authentication**: JWT-based authentication
-- **Styling**: Tailwind CSS with custom design system
+- **Authentication**: JWT with demo mode
+- **File Processing**: XLSX.js for Excel handling
+- **Export**: jsPDF, Puppeteer for PDF generation
+- **UI Components**: Radix UI, Shadcn/ui
+- **Optimization**: Genetic Algorithm implementation
 
-## Prerequisites
+## 🚀 Quick Start
 
-Before running this application, ensure you have:
+### Prerequisites
 
-- Node.js 18+ installed
-- MongoDB running locally or MongoDB Atlas account
-- Yarn package manager (recommended)
+- Node.js 18+ 
+- npm or yarn
+- MongoDB (optional - demo mode works without DB)
 
-## Installation
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd timetable-generation-2
+   git clone https://github.com/karthik05072005/timetable-sih.git
+   cd timetable-sih
    ```
 
 2. **Install dependencies**
    ```bash
-   yarn install
-   # or
    npm install
+   # or
+   yarn install
    ```
 
-3. **Set up environment variables**
-   Create a `.env.local` file in the root directory:
+3. **Environment setup**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local` with your configurations:
    ```env
-   # MongoDB Configuration
    MONGO_URL=mongodb://localhost:27017
    DB_NAME=timetable_ai
-
-   # JWT Configuration
-   JWT_SECRET=timetable-ai-secret-key-2024
-
-   # CORS Configuration
-   CORS_ORIGINS=http://localhost:3000
-
-   # Next.js Configuration
+   JWT_SECRET=your-super-secret-jwt-key-here
    NODE_ENV=development
    ```
 
-4. **Start MongoDB**
-   Make sure MongoDB is running on your system:
+4. **Run development server**
    ```bash
-   # For local MongoDB
-   mongod
-   
-   # Or use MongoDB Atlas for cloud database
-   ```
-
-5. **Run the development server**
-   ```bash
-   yarn dev
-   # or
    npm run dev
+   # or
+   yarn dev
    ```
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+5. **Access the application**
+   Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Usage
+### Demo Login
 
-### 1. Login
-- Use any email and password combination for demo purposes
-- The system will create a default admin account on first login
+- **Email**: Any email (demo@example.com)
+- **Password**: Any password (demo123)
 
-### 2. Upload Data
-- Navigate to the Dashboard or Data Management section
-- Upload Excel files containing:
-  - **Students**: Student ID, Name, Class, Section, Electives
-  - **Faculty**: Faculty ID, Name, Subjects, Availability, Max Hours
-  - **Rooms**: Room ID, Name, Type, Capacity, Equipment
+*The application includes demo mode that works without database setup*
 
-### 3. Configure Constraints
-- Go to Timetable Generation section
-- Set your preferences:
-  - Prevent faculty clashes
-  - Ensure room capacity
-  - Minimum break time
-  - Workload balancing
-  - Advanced preferences
+## 📁 Project Structure
 
-### 4. Generate Timetable
-- Click "Generate Timetable" to start the AI optimization process
-- Monitor progress in real-time
-- View the generated timetable with conflict analysis
+```
+timetable-sih/
+├── app/
+│   ├── api/              # API routes
+│   │   ├── auth/          # Authentication endpoints
+│   │   ├── export-excel/  # Excel export functionality
+│   │   ├── export-pdf/    # PDF export functionality
+│   │   └── publish-timetable/ # Timetable publishing
+│   ├── page.js           # Main application interface
+│   └── layout.js         # Root layout
+├── components/
+│   └── ui/               # Reusable UI components
+├── lib/
+│   └── utils.js          # Utility functions
+├── docs/                 # Documentation
+├── tests/                # Test files
+└── public/               # Static assets
+```
 
-### 5. Export and Manage
-- Export timetables to PDF or Excel
-- Publish timetables for faculty and students
-- Make adjustments and regenerate as needed
+## 🔧 Configuration
 
-## API Endpoints
+### Environment Variables
 
-- `POST /api/auth/login` - User authentication
-- `POST /api/upload` - File upload and processing
-- `POST /api/generate-timetable` - AI timetable generation
-- `GET /api/data` - Retrieve uploaded data
-- `GET /api/timetables` - Get generated timetables
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MONGO_URL` | MongoDB connection string | `mongodb://localhost:27017` |
+| `DB_NAME` | Database name | `timetable_ai` |
+| `JWT_SECRET` | JWT signing secret | Required |
+| `NODE_ENV` | Environment mode | `development` |
+| `CORS_ORIGINS` | Allowed CORS origins | `*` |
 
-## File Format Requirements
+### Deployment
 
-### Students Excel File
-| Student ID | Name | Class | Section | Electives |
-|------------|------|-------|---------|-----------|
-| S001 | John Doe | B.Ed | A | English,Math |
+#### Vercel (Recommended)
 
-### Faculty Excel File
-| Faculty ID | Name | Subjects | Availability | Max Hours |
-|------------|------|----------|--------------|-----------|
-| F001 | Dr. Smith | English,Literature | Mon-Fri | 20 |
+1. **Connect your GitHub repository to Vercel**
+2. **Set environment variables**:
+   - `MONGO_URL`: Your MongoDB Atlas connection string
+   - `JWT_SECRET`: A secure random string
+   - `NODE_ENV`: `production`
+3. **Deploy automatically on push**
 
-### Rooms Excel File
-| Room ID | Name | Type | Capacity | Equipment |
-|---------|------|------|----------|-----------|
-| R001 | Room 301 | Classroom | 40 | Projector |
+#### Other Platforms
 
-## AI Algorithm Details
+- **Build command**: `npm run build`
+- **Start command**: `npm start`
+- **Node version**: 18+
 
-The system uses a genetic algorithm approach:
+## 📊 Usage Guide
 
-1. **Initial Population**: Generates random timetable configurations
-2. **Fitness Evaluation**: Scores each solution based on constraint violations
-3. **Selection**: Keeps the best-performing solutions
-4. **Crossover**: Combines successful solutions
-5. **Mutation**: Introduces random changes for diversity
-6. **Evolution**: Repeats until optimal solution is found
+### 1. Data Management
+- **Upload Excel files** or use **sample data**
+- **Edit, add, or delete** records directly in the interface
+- **Manage students, faculty, and rooms** with full CRUD operations
 
-### Constraint Types
+### 2. Timetable Generation
+- **Configure constraints** (max hours, lunch break, etc.)
+- **Set preferences** using intuitive sliders
+- **Generate timetable** with AI optimization
+- **Preview results** in real-time
 
-**Hard Constraints (Must be satisfied):**
-- No student can be in two places at once
-- No faculty can teach two classes simultaneously
-- No room can host multiple classes at the same time
+### 3. Export Options
+- **Export to PDF**: High-quality printable format
+- **Export to Excel**: Structured spreadsheet format
+- **Publish Timetable**: Save and share with notifications
 
-**Soft Constraints (Optimized for):**
-- Faculty workload balancing
-- Room capacity utilization
-- Minimizing empty periods
-- Break time requirements
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+## 🆘 Support
 
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation for common solutions
+If you encounter any issues or have questions:
 
-## Roadmap
+1. Check the [documentation](docs/)
+2. Search [existing issues](https://github.com/karthik05072005/timetable-sih/issues)
+3. Create a [new issue](https://github.com/karthik05072005/timetable-sih/issues/new)
 
-- [ ] Multi-language support
-- [ ] Advanced reporting and analytics
-- [ ] Integration with existing school management systems
-- [ ] Mobile app development
-- [ ] Real-time collaboration features
-- [ ] Advanced AI models for better optimization
+## 🏆 SIH 2024
+
+This project was developed for Smart India Hackathon 2024, focusing on solving real-world problems in educational scheduling through innovative AI solutions.
 
 ---
 
-**Built with ❤️ for educational institutions**
+**Built with ❤️ for SIH 2024**
+
 
