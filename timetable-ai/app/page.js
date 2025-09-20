@@ -42,7 +42,29 @@ export default function App() {
   })
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [metrics, setMetrics] = useState({ students: null, faculty: null, rooms: null })
-  const [dataByType, setDataByType] = useState({ students: [], faculty: [], rooms: [] })
+  const [dataByType, setDataByType] = useState({ 
+    students: [
+      { id: 'S001', 'Student ID': 'S001', Name: 'Arjun Mehta', Class: '2nd', Section: 'A', Electives: 'AI, Data Science' },
+      { id: 'S002', 'Student ID': 'S002', Name: 'Riya Sharma', Class: '2nd', Section: 'A', Electives: 'AI, Cyber Sec' },
+      { id: 'S003', 'Student ID': 'S003', Name: 'Kiran Patel', Class: '2nd', Section: 'B', Electives: 'ML, IoT' },
+      { id: 'S004', 'Student ID': 'S004', Name: 'Sneha Rao', Class: '2nd', Section: 'B', Electives: 'Data Science' },
+      { id: 'S005', 'Student ID': 'S005', Name: 'Devansh Gupta', Class: '2nd', Section: 'A', Electives: 'Cyber Sec, IoT' }
+    ],
+    faculty: [
+      { id: 'F001', 'Faculty ID': 'F001', Name: 'Dr. Anjali Nair', Subjects: 'Artificial Intelligence, ML', Availability: 'Mon-Fri 9am-4pm', 'Max Hours': '12' },
+      { id: 'F002', 'Faculty ID': 'F002', Name: 'Prof. Rajesh Iyer', Subjects: 'Data Science, Big Data, Cyber Security', Availability: 'Mon-Fri 10am-5pm', 'Max Hours': '10' },
+      { id: 'F003', 'Faculty ID': 'F003', Name: 'Dr. Kavita Joshi', Subjects: 'Cyber Security, Networks', Availability: 'Tue-Thu 9am-12pm', 'Max Hours': '8' },
+      { id: 'F004', 'Faculty ID': 'F004', Name: 'Prof. Manoj Rao', Subjects: 'IoT, Embedded Systems', Availability: 'Mon-Wed 11am-3pm', 'Max Hours': '9' },
+      { id: 'F005', 'Faculty ID': 'F005', Name: 'Dr. Sameer Kulkarni', Subjects: 'Database, Cloud Computing', Availability: 'Fri 9am-4pm', 'Max Hours': '6' }
+    ],
+    rooms: [
+      { id: 'R101', 'Room ID': 'R101', Name: 'Lecture Hall A', Type: 'Classroom', Capacity: '60', Equipment: 'Projector, Whiteboard' },
+      { id: 'R102', 'Room ID': 'R102', Name: 'Lecture Hall B', Type: 'Classroom', Capacity: '50', Equipment: 'Smart Board, AC' },
+      { id: 'L201', 'Room ID': 'L201', Name: 'AI Lab', Type: 'Lab', Capacity: '40', Equipment: 'GPUs, Workstations' },
+      { id: 'L202', 'Room ID': 'L202', Name: 'Cyber Sec Lab', Type: 'Lab', Capacity: '35', Equipment: 'Firewalls, Virtualization Servers' },
+      { id: 'L203', 'Room ID': 'L203', Name: 'Data Science Lab', Type: 'Lab', Capacity: '45', Equipment: 'Python IDEs' }
+    ]
+  })
   const [dataLoading, setDataLoading] = useState(false)
   const [settings, setSettings] = useState(null)
 
@@ -58,7 +80,12 @@ export default function App() {
         })
       }
     } catch (e) {
-      // ignore
+      // Fallback to sample data counts if API fails
+      setMetrics({
+        students: dataByType.students.length,
+        faculty: dataByType.faculty.length,
+        rooms: dataByType.rooms.length
+      })
     }
   }
 
@@ -109,7 +136,10 @@ export default function App() {
         // Fallback to recently uploaded, unsaved data (demo mode)
         setDataByType(prev => ({ ...prev, [type]: uploadedFiles[type] }))
       }
-    } catch (_) {}
+      // If no data from API or uploads, keep the default sample data
+    } catch (_) {
+      // Keep default sample data on error
+    }
   }
 
   const fetchAllData = async () => {
@@ -209,8 +239,13 @@ export default function App() {
   }
 
   const generateTimetable = async () => {
-    if (!uploadedFiles.students || !uploadedFiles.faculty || !uploadedFiles.rooms) {
-      toast.error('Please upload all required files first')
+    // Use sample data if available, or uploaded files as fallback
+    const studentsData = dataByType.students.length > 0 ? dataByType.students : uploadedFiles.students
+    const facultyData = dataByType.faculty.length > 0 ? dataByType.faculty : uploadedFiles.faculty
+    const roomsData = dataByType.rooms.length > 0 ? dataByType.rooms : uploadedFiles.rooms
+
+    if (!studentsData || !facultyData || !roomsData) {
+      toast.error('Please ensure all data (students, faculty, rooms) is available or upload required files')
       return
     }
 
@@ -230,9 +265,9 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          students: uploadedFiles.students,
-          faculty: uploadedFiles.faculty,
-          rooms: uploadedFiles.rooms,
+          students: studentsData,
+          faculty: facultyData,
+          rooms: roomsData,
           constraints
         })
       })
@@ -339,13 +374,17 @@ export default function App() {
                 const daySchedule = schedule?.[day]?.[time] || []
                 return `
                   <td>
-                    ${daySchedule.map(slot => `
+                    ${daySchedule.map(slot => {
+                    const courseData = slot.course || ''
+                    const [courseCode, courseName] = courseData.includes(' - ') ? courseData.split(' - ') : [courseData, '']
+                    return `
                       <div class="course">
-                        <strong>${slot.course.split(' - ')[0]}</strong><br>
-                        ${slot.course.split(' - ')[1] || ''}<br>
+                        <strong>${courseCode}</strong><br>
+                        ${courseName}<br>
                         <small>${slot.faculty}<br>${slot.room}</small>
                       </div>
-                    `).join('')}
+                    `
+                  }).join('')}
                   </td>
                 `
               }).join('')}
@@ -748,16 +787,16 @@ export default function App() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold">{metrics.students ?? (uploadedFiles.students?.length || 0)}</div>
-                    <p className="text-sm text-muted-foreground">Students Uploaded</p>
+                    <div className="text-2xl font-bold">{metrics.students ?? dataByType.students.length}</div>
+                    <p className="text-sm text-muted-foreground">Students Available</p>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold">{metrics.faculty ?? (uploadedFiles.faculty?.length || 0)}</div>
-                    <p className="text-sm text-muted-foreground">Faculty Uploaded</p>
+                    <div className="text-2xl font-bold">{metrics.faculty ?? dataByType.faculty.length}</div>
+                    <p className="text-sm text-muted-foreground">Faculty Available</p>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold">{metrics.rooms ?? (uploadedFiles.rooms?.length || 0)}</div>
-                    <p className="text-sm text-muted-foreground">Rooms Uploaded</p>
+                    <div className="text-2xl font-bold">{metrics.rooms ?? dataByType.rooms.length}</div>
+                    <p className="text-sm text-muted-foreground">Rooms Available</p>
                   </div>
                 </CardContent>
               </Card>

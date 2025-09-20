@@ -73,13 +73,17 @@ function generateSimpleTimetableHTML(timetableData, metadata = {}) {
               const daySchedule = schedule?.[day]?.[time] || []
               return `
                 <td>
-                  ${daySchedule.map(slot => `
+                  ${daySchedule.map(slot => {
+                    const courseData = slot.course || ''
+                    const [courseCode, courseName] = courseData.includes(' - ') ? courseData.split(' - ') : [courseData, '']
+                    return `
                     <div class="course">
-                      <strong>${slot.course.split(' - ')[0]}</strong><br>
-                      ${slot.course.split(' - ')[1] || ''}<br>
+                      <strong>${courseCode}</strong><br>
+                      ${courseName}<br>
                       <small>${slot.faculty}<br>${slot.room}</small>
                     </div>
-                  `).join('')}
+                  `
+                  }).join('')}
                 </td>
               `
             }).join('')}

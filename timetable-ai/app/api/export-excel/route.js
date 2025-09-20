@@ -75,15 +75,34 @@ function generateExcelData(timetableData, metadata = {}) {
   Object.entries(schedule).forEach(([day, timeSlots]) => {
     Object.entries(timeSlots).forEach(([time, slots]) => {
       slots.forEach(slot => {
-        const [courseCode, courseName] = slot.course.split(' - ')
+        // Safely handle course name parsing
+        let courseCode = ''
+        let courseName = ''
+        
+        if (slot.course && typeof slot.course === 'string') {
+          if (slot.course.includes(' - ')) {
+            const [code, name] = slot.course.split(' - ')
+            courseCode = code || ''
+            courseName = name || ''
+          } else {
+            // If no separator, use the whole string as course name
+            courseCode = slot.course.substring(0, 6).toUpperCase() // Generate a short code
+            courseName = slot.course
+          }
+        } else {
+          // Fallback for other data structures
+          courseCode = slot.courseCode || slot.code || 'COURSE'
+          courseName = slot.courseName || slot.name || slot.course || 'Unknown Course'
+        }
+        
         detailedData.push([
-          courseCode || slot.course,
-          courseName || '',
-          slot.faculty,
-          slot.room,
+          courseCode,
+          courseName,
+          slot.faculty || slot.facultyName || 'Unknown Faculty',
+          slot.room || slot.roomName || 'Unknown Room',
           day,
           time,
-          slot.students || 0
+          slot.students || slot.studentCount || 0
         ])
       })
     })

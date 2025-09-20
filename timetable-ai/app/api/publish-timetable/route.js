@@ -58,6 +58,21 @@ export async function POST(request) {
       lastAccessed: null
     }
 
+    // Default notification object
+    let notification = {
+      id: uuidv4(),
+      type: 'timetable_published',
+      title: 'New Timetable Published',
+      message: `The ${metadata?.semester || 'Fall 2025'} timetable for ${metadata?.program || 'B.Ed + FYUP'} has been published and is now available.`,
+      createdAt: new Date(),
+      publishedBy: metadata?.publishedBy || 'Administrator',
+      targetAudience: ['faculty', 'students'],
+      isRead: false,
+      priority: 'high',
+      semester: publishedTimetable.semester,
+      program: publishedTimetable.program
+    }
+
     try {
       // Try to save to database
       const db = await connectToMongo()
@@ -88,21 +103,6 @@ export async function POST(request) {
       // Insert new published timetable
       await db.collection('published_timetables').insertOne(publishedTimetable)
       console.log('✅ Timetable published to database successfully')
-
-      // Create notification for faculty and students (demo implementation)
-      const notification = {
-        id: uuidv4(),
-        type: 'timetable_published',
-        title: 'New Timetable Published',
-        message: `The ${metadata?.semester || 'Fall 2025'} timetable for ${metadata?.program || 'B.Ed + FYUP'} has been published and is now available.`,
-        createdAt: new Date(),
-        publishedBy: metadata?.publishedBy || 'Administrator',
-        targetAudience: ['faculty', 'students'],
-        isRead: false,
-        priority: 'high',
-        semester: publishedTimetable.semester,
-        program: publishedTimetable.program
-      }
 
       await db.collection('notifications').insertOne(notification)
       console.log('📢 Notification created for faculty and students')
